@@ -2,9 +2,5 @@
 
 set -ex
 
-# install PyTorch
-pip3 install torch==2.5.1
-pip3 install torchvision==0.20.1
-
-# clean
-pip3 uninstall -y dataclasses
+# install PyTorch and torchvision from the PyTorch wheel index (CUDA 10.2 builds)
+pip3 install torch==1.10.0+cu102 torchvision==0.11.0+cu102 -f https://download.pytorch.org/whl/cu102/torch_stable.html

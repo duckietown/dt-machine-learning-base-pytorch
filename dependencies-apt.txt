@@ -1,1 +1,5 @@
 # LIST YOUR APT PACKAGES HERE
+
+# Required for NVIDIA's PyTorch build on Jetson
+libopenmpi-dev
+libopenblas-dev
