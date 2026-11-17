@@ -1,16 +1,16 @@
 #!/bin/bash
 
-set -e
+set -ex
 
-# download PyTorch
-echo "Downloading PyTorch v${PYTORCH_VERSION}..."
-PYTORCH_WHEEL_NAME="torch-${PYTORCH_VERSION}.cuda.cudnn-cp38-cp38-linux_aarch64.whl"
-WHEEL_URL="https://duckietown-public-storage.s3.amazonaws.com/assets/python/wheels/${PYTORCH_WHEEL_NAME}"
-wget -q "${WHEEL_URL}" -O "/tmp/${PYTORCH_WHEEL_NAME}"
-# install PyTorch
-echo "Installing PyTorch v${PYTORCH_VERSION}..."
-pip3 install "/tmp/${PYTORCH_WHEEL_NAME}"
-rm "/tmp/${PYTORCH_WHEEL_NAME}"
+# install PyTorch: the CPU build, for arm64 machines that are not a Jetson (Apple Silicon laptops, virtual robots,
+# other arm64 hosts); the Jetson build is in assets/arm64v8-jetpack4. The versions come from the base image.
+pip3 install \
+    --index-url https://download.pytorch.org/whl/cpu \
+    "torch==${PYTORCH_VERSION}" \
+    "torchvision==${TORCHVISION_VERSION}"
 
 # clean
-pip3 uninstall -y dataclasses
+pip3 uninstall -y dataclasses || true
+
+# check
+python3 -c "import torch, torchvision; print('torch', torch.__version__, 'torchvision', torchvision.__version__)"

@@ -13,7 +13,10 @@ ARG DISTRO
 ARG DOCKER_REGISTRY
 ARG BASE_REPOSITORY
 ARG BASE_ORGANIZATION=duckietown
-ARG BASE_TAG=${DISTRO}-${ARCH}
+# JetPack major version of the NVIDIA Jetson the image is built on (set by `dts devel build` on a Jetson, empty
+# elsewhere): selects the base's Jetson variant `<distro>-jetpack<N>-<arch>` and the matching PyTorch build
+ARG JETPACK=
+ARG BASE_TAG=${DISTRO}${JETPACK:+-jetpack${JETPACK}}-${ARCH}
 ARG LAUNCHER=default
 
 # define base image
@@ -29,6 +32,7 @@ ARG PROJECT_MAINTAINER
 ARG PROJECT_ICON
 ARG PROJECT_FORMAT_VERSION
 ARG BASE_TAG
+ARG JETPACK
 ARG BASE_REPOSITORY
 ARG BASE_ORGANIZATION
 ARG LAUNCHER
@@ -116,7 +120,7 @@ LABEL \
 # <== Do not change the code above this line
 # <==================================================
 
-# install PyTorch
+# install PyTorch (platform specific: amd64, arm64v8 or arm64v8-jetpack<N>)
 ARG ARCH
-COPY assets/${ARCH} "${REPO_PATH}/install"
+COPY assets/${ARCH}${JETPACK:+-jetpack${JETPACK}} "${REPO_PATH}/install"
 RUN "${REPO_PATH}/install/install.sh"
